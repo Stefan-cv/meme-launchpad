@@ -1,0 +1,31 @@
+Server:
+  Name: meme-indexer
+  Host: 0.0.0.0
+  Port: 8081
+
+Database:
+  Host: localhost
+  Port: 5432
+  User: postgres
+  Password: ""
+  Name: metaland
+  SSLMode: disable
+  MaxOpenConns: 25
+  MaxIdleConns: 5
+
+Chain:
+  Name: BSC Testnet
+  ChainID: 97
+  RPC: https://your-bsc-testnet-rpc
+  WSS: ""
+  CoreContract: "0x69207F321CFDfd30D73D1d9278e4132E15080ec9"
+  FactoryContract: "0x7A24756A156DE5752a2d91d494D2D4FdCc9fc18F"
+  HelperContract: "0xbdBA43Fa0DF71724E5fF171eD3F4781ece0c141A"
+  VestingContract: "0x99Cd9cA83277338583F40d6b689c0aA5E20baCAD"
+  StartBlock: 82800986
+  BlockBatchSize: 10000
+  PollInterval: 10
+
+Log:
+  Level: info
+  Format: json

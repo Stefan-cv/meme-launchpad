@@ -1,0 +1,1777 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Coinroll MEME Launchpad API",
+    "description": "MEME代币发射平台后端API接口文档，用于复刻后端服务",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Coinroll Team"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api-dev.coinroll.io/api/v1",
+      "description": "开发环境"
+    },
+    {
+      "url": "https://api.coinroll.io/api/v1",
+      "description": "生产环境"
+    }
+  ],
+  "tags": [
+    {"name": "Auth", "description": "认证相关接口"},
+    {"name": "Token", "description": "代币相关接口"},
+    {"name": "Comment", "description": "评论相关接口"},
+    {"name": "Profile", "description": "用户资料相关接口"},
+    {"name": "Activity", "description": "活动相关接口"},
+    {"name": "File", "description": "文件上传相关接口"},
+    {"name": "Invite", "description": "邀请/代理相关接口"},
+    {"name": "Kline", "description": "K线数据接口"},
+    {"name": "Trade", "description": "交易相关接口"},
+    {"name": "Ranking", "description": "排行榜相关接口"},
+    {"name": "Advanced", "description": "高级筛选接口"}
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT Bearer Token认证"
+      }
+    },
+    "schemas": {
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "code": {"type": "integer", "example": 200},
+          "message": {"type": "string", "example": "success"},
+          "data": {"type": "object"}
+        }
+      },
+      "PaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "pageSize": {"type": "integer"},
+          "pageNo": {"type": "integer"},
+          "total": {"type": "integer"},
+          "totalPage": {"type": "integer"}
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "integer"},
+          "address": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"},
+          "username": {"type": "string"},
+          "email": {"type": "string", "format": "email"},
+          "avatar": {"type": "string", "format": "uri"},
+          "createdAt": {"type": "string", "format": "date-time"},
+          "updatedAt": {"type": "string", "format": "date-time"}
+        }
+      },
+      "TokenListItem": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "integer"},
+          "name": {"type": "string"},
+          "symbol": {"type": "string"},
+          "logo": {"type": "string", "format": "uri"},
+          "banner": {"type": "string", "format": "uri"},
+          "desc": {"type": "string"},
+          "description": {"type": "string"},
+          "tokenAddr": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"},
+          "launchMode": {"type": "integer", "description": "1=普通模式, 2=IDO模式"},
+          "launchTime": {"type": "integer", "description": "发射时间戳"},
+          "currentBnb": {"type": "string"},
+          "targetBnb": {"type": "string"},
+          "marginBnb": {"type": "string"},
+          "progressPct": {"type": "string", "description": "进度百分比"},
+          "marketCap": {"type": "string"},
+          "hot": {"type": "integer"},
+          "tokenLv": {"type": "integer"},
+          "tokenRank": {"type": "integer"},
+          "tags": {"type": "array", "items": {"type": "string"}},
+          "website": {"type": "string"},
+          "twitter": {"type": "string"},
+          "telegram": {"type": "string"},
+          "discord": {"type": "string"},
+          "whitepaper": {"type": "string"},
+          "additionalLink1": {"type": "string"},
+          "additionalLink2": {"type": "string"},
+          "lockupTime": {"type": "string"},
+          "preUserLimit": {"type": "string"},
+          "priceChangePercentage24H": {"type": "string"},
+          "isFavorite": {"type": "boolean"},
+          "createdAt": {"type": "string", "format": "date-time"}
+        }
+      },
+      "TokenDetail": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "integer"},
+          "name": {"type": "string"},
+          "symbol": {"type": "string"},
+          "logo": {"type": "string"},
+          "banner": {"type": "string"},
+          "description": {"type": "string"},
+          "tokenContractAddress": {"type": "string"},
+          "creatorAddress": {"type": "string"},
+          "launchMode": {"type": "integer"},
+          "launchTime": {"type": "integer"},
+          "bnbCurrent": {"type": "string"},
+          "bnbTarget": {"type": "string"},
+          "currentPrice": {"type": "string"},
+          "currentPriceUsdt": {"type": "string"},
+          "marketCap": {"type": "string"},
+          "marketCapUsdt": {"type": "string"},
+          "progressPct": {"type": "string"},
+          "totalSupply": {"type": "string"},
+          "holdersCount": {"type": "integer"},
+          "buyCount24H": {"type": "integer"},
+          "sellCount24H": {"type": "integer"},
+          "totalVolume24H": {"type": "string"},
+          "priceChangePercentage24H": {"type": "string"},
+          "top10": {"type": "string"},
+          "totalLock": {"type": "string"},
+          "turnoverRate": {"type": "string"},
+          "liquidity": {"type": "number"},
+          "nonce": {"type": "integer"},
+          "sortPoints": {"type": "integer"},
+          "isFavorite": {"type": "boolean"},
+          "tags": {"type": "array", "items": {"type": "string"}},
+          "website": {"type": "string"},
+          "twitter": {"type": "string"},
+          "telegram": {"type": "string"},
+          "discord": {"type": "string"},
+          "contactEmail": {"type": "string"},
+          "contactTg": {"type": "string"}
+        }
+      },
+      "HotPickToken": {
+        "type": "object",
+        "properties": {
+          "tokenID": {"type": "integer"},
+          "tokenName": {"type": "string"},
+          "tokenSymbol": {"type": "string"},
+          "tokenAddr": {"type": "string"},
+          "tokenLogo": {"type": "string"},
+          "tokenPrice": {"type": "string"},
+          "priceChange": {"type": "string"},
+          "marketCap": {"type": "string"},
+          "isFavorite": {"type": "boolean"}
+        }
+      },
+      "TokenHolder": {
+        "type": "object",
+        "properties": {
+          "address": {"type": "string"},
+          "balance": {"type": "string"},
+          "percentage": {"type": "string"}
+        }
+      },
+      "CreateTokenInput": {
+        "type": "object",
+        "required": ["name", "symbol", "launchMode", "launchTime", "logo", "preBuyPercent", "marginBnb", "marginTime"],
+        "properties": {
+          "name": {"type": "string", "minLength": 1, "maxLength": 50},
+          "symbol": {"type": "string", "minLength": 1, "maxLength": 50},
+          "description": {"type": "string"},
+          "launchMode": {"type": "integer", "description": "1=普通模式, 2=IDO模式"},
+          "launchTime": {"type": "integer", "description": "发射时间戳(0表示立即)"},
+          "logo": {"type": "string", "format": "uri"},
+          "banner": {"type": "string", "format": "uri"},
+          "website": {"type": "string"},
+          "twitter": {"type": "string"},
+          "telegram": {"type": "string"},
+          "discord": {"type": "string"},
+          "whitepaper": {"type": "string"},
+          "additionalLink2": {"type": "string"},
+          "tags": {"type": "array", "items": {"type": "string"}},
+          "preBuyPercent": {"type": "number", "minimum": 0, "maximum": 1},
+          "preBuyUsedPercent": {"type": "array", "items": {"type": "number"}},
+          "preBuyUsedType": {"type": "array", "items": {"type": "integer"}},
+          "preBuyLockTime": {"type": "array", "items": {"type": "number"}},
+          "preBuyUsedName": {"type": "array", "items": {"type": "string"}},
+          "preBuyUsedDesc": {"type": "array", "items": {"type": "string"}},
+          "marginBnb": {"type": "number", "minimum": 0},
+          "marginTime": {"type": "integer", "minimum": 0, "description": "保证金锁定时间(秒)"},
+          "contractTg": {"type": "string"},
+          "contractEmail": {"type": "string", "format": "email"},
+          "digits": {"type": "string", "description": "靓号后缀"},
+          "predictedAddress": {"type": "string"},
+          "totalFundsRaised": {"type": "number", "description": "IDO: 募资目标"},
+          "fundraisingCycle": {"type": "number", "description": "IDO: 募资周期(小时)"},
+          "preUserLimit": {"type": "number", "description": "IDO: 单用户限额"},
+          "userLockupTime": {"type": "number", "description": "IDO: 用户锁仓时间(小时)"},
+          "addLiquidity": {"type": "number", "description": "IDO: 流动性比例"},
+          "protocolRevenue": {"type": "number", "description": "IDO: 协议收入比例"},
+          "coreTeam": {"type": "number", "description": "IDO: 核心团队比例"},
+          "communityTreasury": {"type": "number", "description": "IDO: 社区金库比例"},
+          "buybackReserve": {"type": "number", "description": "IDO: 回购储备比例"}
+        }
+      },
+      "CreateTokenResponse": {
+        "type": "object",
+        "properties": {
+          "code": {"type": "integer"},
+          "message": {"type": "string"},
+          "data": {
+            "type": "object",
+            "properties": {
+              "create2Salt": {"type": "string", "description": "CREATE2部署用的salt"},
+              "createArg": {"type": "string", "description": "合约createToken方法的编码参数"},
+              "nonce": {"type": "integer"},
+              "predictedAddress": {"type": "string", "description": "预测的代币地址"},
+              "requestId": {"type": "string", "description": "请求唯一ID"},
+              "signature": {"type": "string", "description": "合约签名"},
+              "timestamp": {"type": "integer"}
+            }
+          }
+        }
+      },
+      "CommentItem": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "integer"},
+          "content": {"type": "string"},
+          "img": {"type": "string", "format": "uri"},
+          "holdingAmount": {"type": "string"},
+          "walletAddress": {"type": "string"},
+          "createdAt": {"type": "string", "format": "date-time"}
+        }
+      },
+      "TradeItem": {
+        "type": "object",
+        "properties": {
+          "blockNumber": {"type": "integer"},
+          "blockTimestamp": {"type": "string"},
+          "bnbAmount": {"type": "string"},
+          "tokenAmount": {"type": "string"},
+          "price": {"type": "string"},
+          "usdAmount": {"type": "string"},
+          "tradeType": {"type": "integer", "description": "10=买入, 20=卖出"},
+          "transactionHash": {"type": "string"},
+          "userAddress": {"type": "string"},
+          "tokenAddress": {"type": "string"},
+          "createdAt": {"type": "string"}
+        }
+      },
+      "KlineData": {
+        "type": "object",
+        "properties": {
+          "s": {"type": "string", "description": "状态或符号"},
+          "t": {"type": "array", "items": {"type": "integer"}, "description": "时间戳数组"},
+          "o": {"type": "array", "items": {"type": "string"}, "description": "开盘价数组"},
+          "h": {"type": "array", "items": {"type": "string"}, "description": "最高价数组"},
+          "l": {"type": "array", "items": {"type": "string"}, "description": "最低价数组"},
+          "c": {"type": "array", "items": {"type": "string"}, "description": "收盘价数组"},
+          "v": {"type": "array", "items": {"type": "string"}, "description": "成交量数组"}
+        }
+      },
+      "PresignUrl": {
+        "type": "object",
+        "properties": {
+          "uploadUrl": {"type": "string", "format": "uri"},
+          "uploadHeaders": {"type": "object", "additionalProperties": {"type": "string"}},
+          "publicUrl": {"type": "string", "format": "uri"},
+          "fileName": {"type": "string"},
+          "key": {"type": "string"},
+          "expiresAt": {"type": "integer"}
+        }
+      },
+      "UserStatus": {
+        "type": "object",
+        "properties": {
+          "isAgent": {"type": "boolean"},
+          "invitationCode": {"type": "string"},
+          "address": {"type": "string"}
+        }
+      },
+      "UserCommission": {
+        "type": "object",
+        "properties": {
+          "address": {"type": "string"},
+          "totalFee": {"type": "number"},
+          "inviteUserCount": {"type": "integer"},
+          "tradingUserCount": {"type": "integer"},
+          "totalRebateFee": {"type": "number"}
+        }
+      },
+      "OverviewStats": {
+        "type": "object",
+        "properties": {
+          "createdTokens": {"type": "integer"},
+          "heatedTokens": {"type": "integer"},
+          "ownedTokens": {"type": "integer"},
+          "pendingUnlockTokens": {"type": "integer"},
+          "totalTradeBnb": {"type": "string"}
+        }
+      },
+      "AdvancedTokenItem": {
+        "type": "object",
+        "properties": {
+          "tokenID": {"type": "integer"},
+          "creatorID": {"type": "integer"},
+          "creatorAddress": {"type": "string"},
+          "tokenName": {"type": "string"},
+          "tokenSymbol": {"type": "string"},
+          "tokenDescription": {"type": "string"},
+          "tokenContractAddress": {"type": "string"},
+          "tokenLaunchMode": {"type": "integer"},
+          "tokenLogo": {"type": "string"},
+          "website": {"type": "string"},
+          "twitter": {"type": "string"},
+          "whitepaper": {"type": "string"},
+          "telegram": {"type": "string"},
+          "discord": {"type": "string"},
+          "graduationTime": {"type": "integer"},
+          "tokenCurrentPrice": {"type": "string"},
+          "tokenMarketCap": {"type": "string"},
+          "holdersCount": {"type": "integer"},
+          "progressPct": {"type": "string"},
+          "voteCount": {"type": "integer"},
+          "totalVolume24h": {"type": "string"},
+          "priceChange24h": {"type": "string"},
+          "priceChangePercentage24h": {"type": "string"},
+          "marginBnbNum": {"type": "number"},
+          "bnbTarget": {"type": "number"},
+          "bnbCurrent": {"type": "number"},
+          "preBuyPercent": {"type": "number"},
+          "buyCount24h": {"type": "integer"},
+          "sellCount24h": {"type": "integer"},
+          "tokenRank": {"type": "integer"},
+          "tokenLv": {"type": "integer"},
+          "sortPoints": {"type": "integer"},
+          "top10SupplyPercent": {"type": "number"}
+        }
+      },
+      "RankingTokenItem": {
+        "type": "object",
+        "properties": {
+          "tokenAddress": {"type": "string"},
+          "name": {"type": "string"},
+          "symbol": {"type": "string"},
+          "subName": {"type": "string"},
+          "iconUrl": {"type": "string"},
+          "price": {"type": "number"},
+          "change24h": {"type": "number"},
+          "marketCap": {"type": "number"},
+          "launchTime": {"type": "integer"},
+          "launchMode": {"type": "integer"},
+          "hot": {"type": "integer"},
+          "holders": {"type": "integer"},
+          "age": {"type": "integer"},
+          "progressPct": {"type": "number"},
+          "progress": {"type": "number"},
+          "top10Percent": {"type": "number"},
+          "txCount": {"type": "integer"},
+          "volume24h": {"type": "number"}
+        }
+      },
+      "CreateEventInput": {
+        "type": "object",
+        "required": ["name", "description", "categoryType", "playType", "rewardTokenType", "rewardAmount", "rewardSlots", "startAt", "endAt", "coverImage", "tokenId", "initiatorType", "audienceType"],
+        "properties": {
+          "name": {"type": "string"},
+          "description": {"type": "string"},
+          "categoryType": {"type": "integer"},
+          "playType": {"type": "integer"},
+          "rewardTokenType": {"type": "integer"},
+          "rewardAmount": {"type": "string"},
+          "rewardSlots": {"type": "string"},
+          "startAt": {"type": "string", "format": "date-time"},
+          "endAt": {"type": "string", "format": "date-time"},
+          "coverImage": {"type": "string", "format": "uri"},
+          "tokenId": {"type": "integer"},
+          "initiatorType": {"type": "integer"},
+          "audienceType": {"type": "integer"},
+          "minDailyTradeAmount": {"type": "string"},
+          "inviteMinCount": {"type": "string"},
+          "inviteeMinTradeAmount": {"type": "string"},
+          "heatVoteTarget": {"type": "string"},
+          "commentMinCount": {"type": "string"},
+          "rewardTokenId": {"type": "integer"},
+          "rewardTokenAddress": {"type": "string"}
+        }
+      }
+    }
+  },
+  "paths": {
+    "/user/sign-msg": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "获取签名消息",
+        "description": "获取用于钱包签名登录的消息",
+        "parameters": [
+          {
+            "name": "address",
+            "in": "query",
+            "required": true,
+            "schema": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"},
+            "description": "钱包地址"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {"type": "string", "description": "需要签名的消息"},
+                        "nonce": {"type": "string"},
+                        "expiry": {"type": "integer"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/wallet-login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "钱包登录",
+        "description": "使用钱包签名进行登录认证",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["address", "signature"],
+                "properties": {
+                  "address": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"},
+                  "signature": {"type": "string", "description": "钱包签名"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "登录成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "token": {"type": "string", "description": "访问令牌"},
+                        "refreshToken": {"type": "string"},
+                        "expiresIn": {"type": "integer"},
+                        "tokenType": {"type": "string", "default": "Bearer"},
+                        "user": {"$ref": "#/components/schemas/User"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/refresh-token": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "刷新令牌",
+        "description": "使用刷新令牌获取新的访问令牌",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["refreshToken"],
+                "properties": {
+                  "refreshToken": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "刷新成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "token": {"type": "string"},
+                        "refreshToken": {"type": "string"},
+                        "expiresIn": {"type": "integer"},
+                        "tokenType": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/overview-stats": {
+      "get": {
+        "tags": ["Profile"],
+        "summary": "获取用户概览统计",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {
+            "name": "address",
+            "in": "query",
+            "schema": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {"$ref": "#/components/schemas/OverviewStats"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/following-list": {
+      "get": {
+        "tags": ["Profile"],
+        "summary": "获取关注列表",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "pn", "in": "query", "schema": {"type": "integer", "default": 1}},
+          {"name": "ps", "in": "query", "schema": {"type": "integer", "default": 10}}
+        ],
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/user/followers-list": {
+      "get": {
+        "tags": ["Profile"],
+        "summary": "获取粉丝列表",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "pn", "in": "query", "schema": {"type": "integer", "default": 1}},
+          {"name": "ps", "in": "query", "schema": {"type": "integer", "default": 10}},
+          {"name": "search", "in": "query", "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/token/token-list": {
+      "get": {
+        "tags": ["Token"],
+        "summary": "获取代币列表",
+        "parameters": [
+          {"name": "pn", "in": "query", "schema": {"type": "integer", "default": 1}, "description": "页码"},
+          {"name": "ps", "in": "query", "schema": {"type": "integer", "default": 10}, "description": "每页数量"},
+          {"name": "sort", "in": "query", "schema": {"type": "string"}, "description": "排序字段"},
+          {"name": "lunchMode", "in": "query", "schema": {"type": "integer"}, "description": "发射模式"},
+          {"name": "status", "in": "query", "schema": {"type": "string"}, "description": "状态"},
+          {"name": "launchTimeStart", "in": "query", "schema": {"type": "integer"}, "description": "发射时间开始"},
+          {"name": "launchTimeEnd", "in": "query", "schema": {"type": "integer"}, "description": "发射时间结束"}
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {
+                      "allOf": [
+                        {"$ref": "#/components/schemas/PaginatedResponse"},
+                        {
+                          "type": "object",
+                          "properties": {
+                            "result": {
+                              "type": "array",
+                              "items": {"$ref": "#/components/schemas/TokenListItem"}
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/token/detail": {
+      "get": {
+        "tags": ["Token"],
+        "summary": "获取代币详情",
+        "parameters": [
+          {
+            "name": "tokenAddress",
+            "in": "query",
+            "required": true,
+            "schema": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"},
+            "description": "代币合约地址"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {"$ref": "#/components/schemas/TokenDetail"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/token/hot-pick": {
+      "get": {
+        "tags": ["Token"],
+        "summary": "获取热门代币",
+        "description": "获取热门代币列表用于轮播展示",
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {
+                      "type": "array",
+                      "items": {"$ref": "#/components/schemas/HotPickToken"}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/token/trending-token": {
+      "get": {
+        "tags": ["Token"],
+        "summary": "获取趋势代币",
+        "parameters": [
+          {"name": "pn", "in": "query", "schema": {"type": "integer", "default": 1}},
+          {"name": "ps", "in": "query", "schema": {"type": "integer", "default": 10}},
+          {"name": "lunchMode", "in": "query", "schema": {"type": "integer"}},
+          {"name": "launchTimeStart", "in": "query", "schema": {"type": "integer"}},
+          {"name": "launchTimeEnd", "in": "query", "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "成功"
+          }
+        }
+      }
+    },
+    "/token/holders": {
+      "get": {
+        "tags": ["Token"],
+        "summary": "获取代币持有者列表",
+        "parameters": [
+          {
+            "name": "tokenAddress",
+            "in": "query",
+            "required": true,
+            "schema": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"}
+          },
+          {"name": "pn", "in": "query", "schema": {"type": "integer", "default": 1}},
+          {"name": "ps", "in": "query", "schema": {"type": "integer", "default": 10}}
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {
+                      "type": "array",
+                      "items": {"$ref": "#/components/schemas/TokenHolder"}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/token/create-token": {
+      "post": {
+        "tags": ["Token"],
+        "summary": "创建代币",
+        "description": "创建新代币，返回合约调用所需的参数和签名",
+        "security": [{"BearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/CreateTokenInput"}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/CreateTokenResponse"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/token/calculate-address": {
+      "post": {
+        "tags": ["Token"],
+        "summary": "计算代币地址",
+        "description": "预计算代币合约地址(CREATE2)",
+        "security": [{"BearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "symbol"],
+                "properties": {
+                  "name": {"type": "string", "maxLength": 50},
+                  "symbol": {"type": "string", "maxLength": 50},
+                  "digits": {"type": "string", "maxLength": 4, "description": "靓号后缀"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "predictedAddress": {"type": "string"},
+                        "salt": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/token/favorite": {
+      "post": {
+        "tags": ["Token"],
+        "summary": "收藏代币",
+        "security": [{"BearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["tokenId"],
+                "properties": {
+                  "tokenId": {"type": "integer"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "成功"}
+        }
+      }
+    },
+    "/token/unfavorite": {
+      "post": {
+        "tags": ["Token"],
+        "summary": "取消收藏代币",
+        "security": [{"BearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["tokenId"],
+                "properties": {
+                  "tokenId": {"type": "integer"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "成功"}
+        }
+      }
+    },
+    "/token/my-ido-list": {
+      "get": {
+        "tags": ["Token"],
+        "summary": "获取我的IDO列表",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "pn", "in": "query", "schema": {"type": "integer"}},
+          {"name": "ps", "in": "query", "schema": {"type": "integer"}},
+          {"name": "sortField", "in": "query", "schema": {"type": "string"}},
+          {"name": "sortType", "in": "query", "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {"description": "成功"}
+        }
+      }
+    },
+    "/token/my-created-token-list": {
+      "get": {
+        "tags": ["Token"],
+        "summary": "获取我创建的代币列表",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "pn", "in": "query", "schema": {"type": "integer"}},
+          {"name": "ps", "in": "query", "schema": {"type": "integer"}},
+          {"name": "sortField", "in": "query", "schema": {"type": "string"}},
+          {"name": "sortType", "in": "query", "schema": {"type": "string"}},
+          {"name": "search", "in": "query", "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {"description": "成功"}
+        }
+      }
+    },
+    "/token/my-owned-token-list": {
+      "get": {
+        "tags": ["Token"],
+        "summary": "获取我拥有的代币列表",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "pn", "in": "query", "schema": {"type": "integer"}},
+          {"name": "ps", "in": "query", "schema": {"type": "integer"}},
+          {"name": "search", "in": "query", "schema": {"type": "string"}},
+          {"name": "sortField", "in": "query", "schema": {"type": "string"}},
+          {"name": "sortType", "in": "query", "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {"description": "成功"}
+        }
+      }
+    },
+    "/token/my-favorite-tokens": {
+      "get": {
+        "tags": ["Token"],
+        "summary": "获取我关注的代币列表",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "pn", "in": "query", "schema": {"type": "integer"}},
+          {"name": "ps", "in": "query", "schema": {"type": "integer"}},
+          {"name": "search", "in": "query", "schema": {"type": "string"}},
+          {"name": "sortField", "in": "query", "schema": {"type": "string"}},
+          {"name": "sortType", "in": "query", "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {"description": "成功"}
+        }
+      }
+    },
+    "/token/ranking-token-list": {
+      "get": {
+        "tags": ["Ranking"],
+        "summary": "获取排行榜代币列表",
+        "parameters": [
+          {"name": "pn", "in": "query", "schema": {"type": "integer"}},
+          {"name": "ps", "in": "query", "schema": {"type": "integer"}},
+          {"name": "platform", "in": "query", "schema": {"type": "integer", "minimum": 0, "maximum": 1}},
+          {"name": "category", "in": "query", "schema": {"type": "string"}},
+          {"name": "tokenSymbol", "in": "query", "schema": {"type": "string"}},
+          {"name": "pageType", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 3}},
+          {"name": "sortField", "in": "query", "schema": {"type": "string"}},
+          {"name": "sortType", "in": "query", "schema": {"type": "string", "enum": ["asc", "desc"]}}
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {
+                      "allOf": [
+                        {"$ref": "#/components/schemas/PaginatedResponse"},
+                        {
+                          "type": "object",
+                          "properties": {
+                            "list": {
+                              "type": "array",
+                              "items": {"$ref": "#/components/schemas/RankingTokenItem"}
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/token/overview-rankings": {
+      "get": {
+        "tags": ["Ranking"],
+        "summary": "获取概览排行榜",
+        "parameters": [
+          {"name": "top", "in": "query", "schema": {"type": "integer", "minimum": 1, "maximum": 10}}
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "hot": {"type": "array", "items": {"$ref": "#/components/schemas/RankingTokenItem"}},
+                        "new": {"type": "array", "items": {"$ref": "#/components/schemas/RankingTokenItem"}},
+                        "topGainer": {"type": "array", "items": {"$ref": "#/components/schemas/RankingTokenItem"}},
+                        "topVolume": {"type": "array", "items": {"$ref": "#/components/schemas/RankingTokenItem"}},
+                        "topMarketCap": {"type": "array", "items": {"$ref": "#/components/schemas/RankingTokenItem"}}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/token/trade-rankings-list": {
+      "get": {
+        "tags": ["Ranking"],
+        "summary": "获取交易排行榜",
+        "parameters": [
+          {"name": "top", "in": "query", "schema": {"type": "integer"}},
+          {"name": "rankingType", "in": "query", "required": true, "schema": {"type": "integer"}},
+          {"name": "platform", "in": "query", "required": true, "schema": {"type": "integer"}},
+          {"name": "pn", "in": "query", "schema": {"type": "integer"}},
+          {"name": "ps", "in": "query", "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {"description": "成功"}
+        }
+      }
+    },
+    "/token/advanced-token-list": {
+      "get": {
+        "tags": ["Advanced"],
+        "summary": "获取高级筛选代币列表",
+        "parameters": [
+          {"name": "pn", "in": "query", "schema": {"type": "integer"}},
+          {"name": "ps", "in": "query", "schema": {"type": "integer"}},
+          {"name": "volumeStatisticsType", "in": "query", "schema": {"type": "integer"}, "description": "交易量统计类型"},
+          {"name": "marketCapMin", "in": "query", "schema": {"type": "number"}},
+          {"name": "marketCapMax", "in": "query", "schema": {"type": "number"}},
+          {"name": "holdersMin", "in": "query", "schema": {"type": "integer"}},
+          {"name": "holdersMax", "in": "query", "schema": {"type": "integer"}},
+          {"name": "volumeMin", "in": "query", "schema": {"type": "number"}},
+          {"name": "volumeMax", "in": "query", "schema": {"type": "number"}},
+          {"name": "tokenIssuanceMode", "in": "query", "schema": {"type": "integer", "enum": [1, 2, 3, 4]}},
+          {"name": "isTop10", "in": "query", "schema": {"type": "boolean"}},
+          {"name": "isSign", "in": "query", "schema": {"type": "boolean"}},
+          {"name": "isPancakeV3", "in": "query", "schema": {"type": "boolean"}},
+          {"name": "sortType", "in": "query", "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {
+                      "allOf": [
+                        {"$ref": "#/components/schemas/PaginatedResponse"},
+                        {
+                          "type": "object",
+                          "properties": {
+                            "list": {
+                              "type": "array",
+                              "items": {"$ref": "#/components/schemas/AdvancedTokenItem"}
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/comment/list": {
+      "get": {
+        "tags": ["Comment"],
+        "summary": "获取评论列表",
+        "parameters": [
+          {"name": "tokenId", "in": "query", "required": true, "schema": {"type": "integer"}},
+          {"name": "pn", "in": "query", "schema": {"type": "integer", "default": 1}},
+          {"name": "ps", "in": "query", "schema": {"type": "integer", "default": 20}},
+          {"name": "startTime", "in": "query", "schema": {"type": "integer"}, "description": "分页用的时间戳"}
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "comments": {
+                          "type": "array",
+                          "items": {"$ref": "#/components/schemas/CommentItem"}
+                        },
+                        "total": {"type": "integer"},
+                        "hasMore": {"type": "boolean"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/comment/get-upload-url": {
+      "get": {
+        "tags": ["Comment"],
+        "summary": "获取评论图片上传URL",
+        "security": [{"BearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "uploadUrl": {"type": "string", "format": "uri"},
+                        "imageUrl": {"type": "string", "format": "uri"},
+                        "expiresAt": {"type": "integer"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/comment/post-comment": {
+      "post": {
+        "tags": ["Comment"],
+        "summary": "发布文字评论",
+        "security": [{"BearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["tokenId", "content"],
+                "properties": {
+                  "tokenId": {"type": "integer"},
+                  "content": {"type": "string", "minLength": 1, "maxLength": 500}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "commentId": {"type": "integer"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/comment/post-img-comment": {
+      "post": {
+        "tags": ["Comment"],
+        "summary": "发布图片评论",
+        "security": [{"BearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["tokenId", "img"],
+                "properties": {
+                  "tokenId": {"type": "integer"},
+                  "img": {"type": "string", "format": "uri"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "成功"}
+        }
+      }
+    },
+    "/comment/delete": {
+      "post": {
+        "tags": ["Comment"],
+        "summary": "删除评论",
+        "security": [{"BearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["commentId"],
+                "properties": {
+                  "commentId": {"type": "integer"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "成功"}
+        }
+      }
+    },
+    "/trade/list": {
+      "get": {
+        "tags": ["Trade"],
+        "summary": "获取交易记录列表",
+        "parameters": [
+          {"name": "tokenAddress", "in": "query", "required": true, "schema": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"}},
+          {"name": "ps", "in": "query", "schema": {"type": "integer", "default": 10}},
+          {"name": "pn", "in": "query", "schema": {"type": "integer", "default": 1}},
+          {"name": "orderBy", "in": "query", "schema": {"type": "string", "enum": ["create_at", "usd_amount", "token_amount", "bnb_amount", "event_type"]}},
+          {"name": "orderDesc", "in": "query", "schema": {"type": "boolean"}},
+          {"name": "minUsdAmount", "in": "query", "schema": {"type": "number"}},
+          {"name": "maxUsdAmount", "in": "query", "schema": {"type": "number"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "ps": {"type": "integer"},
+                        "pn": {"type": "integer"},
+                        "total": {"type": "integer"},
+                        "totalPage": {"type": "integer"},
+                        "result": {
+                          "type": "array",
+                          "items": {"$ref": "#/components/schemas/TradeItem"}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/trade/upcoming-token": {
+      "get": {
+        "tags": ["Trade"],
+        "summary": "获取即将上线的代币",
+        "parameters": [
+          {"name": "pn", "in": "query", "schema": {"type": "integer", "default": 1}},
+          {"name": "ps", "in": "query", "schema": {"type": "integer", "default": 30}}
+        ],
+        "responses": {
+          "200": {"description": "成功"}
+        }
+      }
+    },
+    "/trade/almost-full-token": {
+      "get": {
+        "tags": ["Trade"],
+        "summary": "获取即将满额的代币",
+        "parameters": [
+          {"name": "pn", "in": "query", "schema": {"type": "integer", "default": 1}},
+          {"name": "ps", "in": "query", "schema": {"type": "integer", "default": 30}}
+        ],
+        "responses": {
+          "200": {"description": "成功"}
+        }
+      }
+    },
+    "/trade/today-launching-token": {
+      "get": {
+        "tags": ["Trade"],
+        "summary": "获取今日上线的代币",
+        "parameters": [
+          {"name": "pn", "in": "query", "schema": {"type": "integer", "default": 1}},
+          {"name": "ps", "in": "query", "schema": {"type": "integer", "default": 30}},
+          {"name": "lunchMode", "in": "query", "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {"description": "成功"}
+        }
+      }
+    },
+    "/kline/history": {
+      "get": {
+        "tags": ["Kline"],
+        "summary": "获取K线历史数据",
+        "parameters": [
+          {"name": "tokenAddr", "in": "query", "required": true, "schema": {"type": "string"}},
+          {"name": "interval", "in": "query", "required": true, "schema": {"type": "string", "enum": ["1m", "3m", "5m", "15m", "30m", "1h", "2h", "4h", "6h", "8h", "12h", "1d", "3d", "1w", "1M"]}},
+          {"name": "from", "in": "query", "required": true, "schema": {"type": "integer"}, "description": "开始时间戳(秒)"},
+          {"name": "to", "in": "query", "required": true, "schema": {"type": "integer"}, "description": "结束时间戳(秒)"}
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {"$ref": "#/components/schemas/KlineData"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/kline/history-with-cursor": {
+      "get": {
+        "tags": ["Kline"],
+        "summary": "获取K线历史数据(带游标分页)",
+        "parameters": [
+          {"name": "tokenAddr", "in": "query", "required": true, "schema": {"type": "string"}},
+          {"name": "interval", "in": "query", "required": true, "schema": {"type": "string", "enum": ["1m", "3m", "5m", "15m", "30m", "1h", "2h", "4h", "6h", "8h", "12h", "1d", "3d", "1w", "1M"]}},
+          {"name": "cursor", "in": "query", "schema": {"type": "string"}, "description": "分页游标"},
+          {"name": "limit", "in": "query", "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "cursor": {"type": "string"},
+                        "klines": {"$ref": "#/components/schemas/KlineData"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/file/token-logo-presign": {
+      "get": {
+        "tags": ["File"],
+        "summary": "获取Token Logo预签名上传URL",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "mimeType", "in": "query", "required": true, "schema": {"type": "string", "enum": ["jpg", "png", "gif"]}},
+          {"name": "chainId", "in": "query", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {"$ref": "#/components/schemas/PresignUrl"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/file/token-banner-presign": {
+      "get": {
+        "tags": ["File"],
+        "summary": "获取Token Banner预签名上传URL",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "mimeType", "in": "query", "required": true, "schema": {"type": "string", "enum": ["jpg", "png"]}},
+          {"name": "chainId", "in": "query", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {"$ref": "#/components/schemas/PresignUrl"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/file/activity-image-presign": {
+      "get": {
+        "tags": ["File"],
+        "summary": "获取活动图片预签名上传URL",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "mimeType", "in": "query", "required": true, "schema": {"type": "string", "enum": ["jpg", "png", "gif"]}},
+          {"name": "chainId", "in": "query", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {"description": "成功"}
+        }
+      }
+    },
+    "/file/upload-confirm": {
+      "post": {
+        "tags": ["File"],
+        "summary": "确认文件上传成功",
+        "security": [{"BearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["key", "uploadedUrl"],
+                "properties": {
+                  "key": {"type": "string"},
+                  "uploadedUrl": {"type": "string", "format": "uri"},
+                  "metadata": {"type": "object"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "成功"}
+        }
+      }
+    },
+    "/act/user-participated": {
+      "get": {
+        "tags": ["Activity"],
+        "summary": "获取用户参与的活动列表",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "pn", "in": "query", "schema": {"type": "integer"}},
+          {"name": "ps", "in": "query", "schema": {"type": "integer"}},
+          {"name": "userId", "in": "query", "schema": {"type": "integer"}},
+          {"name": "status", "in": "query", "schema": {"type": "integer"}},
+          {"name": "sortField", "in": "query", "schema": {"type": "string"}},
+          {"name": "sortType", "in": "query", "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {"description": "成功"}
+        }
+      }
+    },
+    "/act/user-created": {
+      "get": {
+        "tags": ["Activity"],
+        "summary": "获取用户创建的活动列表",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "pn", "in": "query", "schema": {"type": "integer"}},
+          {"name": "ps", "in": "query", "schema": {"type": "integer"}},
+          {"name": "userId", "in": "query", "schema": {"type": "integer"}},
+          {"name": "status", "in": "query", "schema": {"type": "integer"}},
+          {"name": "sortField", "in": "query", "schema": {"type": "string"}},
+          {"name": "sortType", "in": "query", "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {"description": "成功"}
+        }
+      }
+    },
+    "/act/create": {
+      "post": {
+        "tags": ["Activity"],
+        "summary": "创建活动",
+        "security": [{"BearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/CreateEventInput"}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "activityId": {"type": "integer"},
+                        "status": {"type": "integer"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/back/user-status": {
+      "get": {
+        "tags": ["Invite"],
+        "summary": "获取用户状态和邀请码",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "address", "in": "query", "required": true, "schema": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {"$ref": "#/components/schemas/UserStatus"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/back/user-commission": {
+      "get": {
+        "tags": ["Invite"],
+        "summary": "获取用户佣金信息",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "address", "in": "query", "required": true, "schema": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {"$ref": "#/components/schemas/UserCommission"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/back/user-invites": {
+      "get": {
+        "tags": ["Invite"],
+        "summary": "获取用户邀请列表",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "address", "in": "query", "required": true, "schema": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"}},
+          {"name": "page", "in": "query", "schema": {"type": "integer", "default": 1}},
+          {"name": "size", "in": "query", "schema": {"type": "integer", "default": 10}}
+        ],
+        "responses": {
+          "200": {"description": "成功"}
+        }
+      }
+    },
+    "/back/agent-detail": {
+      "get": {
+        "tags": ["Invite"],
+        "summary": "获取代理详情",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "address", "in": "query", "required": true, "schema": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"}}
+        ],
+        "responses": {
+          "200": {"description": "成功"}
+        }
+      }
+    },
+    "/back/agent-daily-commission": {
+      "get": {
+        "tags": ["Invite"],
+        "summary": "获取代理每日佣金统计",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "address", "in": "query", "required": true, "schema": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"}},
+          {"name": "dataType", "in": "query", "required": true, "schema": {"type": "integer", "enum": [7, 30]}, "description": "统计天数(7或30)"}
+        ],
+        "responses": {
+          "200": {"description": "成功"}
+        }
+      }
+    },
+    "/back/agent-daily-new-agents": {
+      "get": {
+        "tags": ["Invite"],
+        "summary": "获取每日新增代理统计",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "address", "in": "query", "required": true, "schema": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"}},
+          {"name": "dataType", "in": "query", "required": true, "schema": {"type": "integer", "enum": [7, 30]}}
+        ],
+        "responses": {
+          "200": {"description": "成功"}
+        }
+      }
+    },
+    "/back/agent-daily-trade-amount": {
+      "get": {
+        "tags": ["Invite"],
+        "summary": "获取每日交易量统计",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "address", "in": "query", "required": true, "schema": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"}},
+          {"name": "dataType", "in": "query", "required": true, "schema": {"type": "integer", "enum": [7, 30]}}
+        ],
+        "responses": {
+          "200": {"description": "成功"}
+        }
+      }
+    },
+    "/back/agent-descendant-stats": {
+      "get": {
+        "tags": ["Invite"],
+        "summary": "获取代理后代统计",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "address", "in": "query", "required": true, "schema": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"}},
+          {"name": "timeRange", "in": "query", "required": true, "schema": {"type": "string", "enum": ["24h", "7d", "1m", "3m", "1y"]}},
+          {"name": "name", "in": "query", "schema": {"type": "string"}},
+          {"name": "agentAddress", "in": "query", "schema": {"type": "string"}},
+          {"name": "page", "in": "query", "schema": {"type": "integer", "default": 1}},
+          {"name": "size", "in": "query", "schema": {"type": "integer", "default": 10}}
+        ],
+        "responses": {
+          "200": {"description": "成功"}
+        }
+      }
+    },
+    "/front/rebate_record": {
+      "post": {
+        "tags": ["Invite"],
+        "summary": "创建返佣记录",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "address", "in": "query", "required": true, "schema": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"}}
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["userId", "traderId", "userAddr", "amount", "status"],
+                "properties": {
+                  "userId": {"type": "integer"},
+                  "traderId": {"type": "integer"},
+                  "userAddr": {"type": "string"},
+                  "amount": {"type": "number"},
+                  "status": {"type": "integer"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "成功"}
+        }
+      }
+    },
+    "/front/rebate_record/check-status": {
+      "get": {
+        "tags": ["Invite"],
+        "summary": "检查返佣记录状态",
+        "security": [{"BearerAuth": []}],
+        "parameters": [
+          {"name": "address", "in": "query", "required": true, "schema": {"type": "string", "pattern": "^0x[a-fA-F0-9]{40}$"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {"type": "integer"},
+                    "message": {"type": "string"},
+                    "data": {"type": "boolean"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

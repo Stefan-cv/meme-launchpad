@@ -1,0 +1,28 @@
+# ===== 敏感配置（真实密钥文件不上传，复制 example 后填写）=====
+backend/apps/api/etc/api.yaml
+backend/apps/api/etc/api-local.yaml
+backend/apps/indexer/config/config.yaml
+.env
+.env.*
+
+# ===== 依赖 =====
+node_modules/
+web/node_modules/
+lib/
+cache/
+
+# ===== 构建产物 =====
+web/dist/
+web/.next/
+out/
+broadcast/
+backend/apps/api/api-server
+backend/apps/api/build/
+backend/apps/*/build/
+backend/apps/*/bin/
+*.exe
+
+# ===== 系统 =====
+.DS_Store
+*.log
+tmp/

@@ -1,0 +1,297 @@
+syntax = "v1"
+
+info (
+	title:   "Coinroll MEME Launchpad API"
+	desc:    "MEME代币发射平台后端API"
+	author:  "Coinroll Team"
+	version: "1.0.0"
+)
+
+import "types.api"
+
+// ==================== 无需认证的接口 ====================
+
+@server (
+	prefix: /api/v1
+	group:  user
+)
+service meme-api {
+	@doc "获取签名消息"
+	@handler GetSignMsg
+	get /user/sign-msg (GetSignMsgRequest) returns (Response)
+
+	@doc "钱包登录"
+	@handler WalletLogin
+	post /user/wallet-login (WalletLoginRequest) returns (Response)
+
+	@doc "刷新令牌"
+	@handler RefreshToken
+	post /user/refresh-token (RefreshTokenRequest) returns (Response)
+}
+
+@server (
+	prefix: /api/v1
+	group:  token
+)
+service meme-api {
+	@doc "获取代币列表"
+	@handler GetTokenList
+	get /token/token-list (TokenListRequest) returns (Response)
+
+	@doc "获取代币详情"
+	@handler GetTokenDetail
+	get /token/detail (TokenDetailRequest) returns (Response)
+
+	@doc "获取热门代币"
+	@handler GetHotPick
+	get /token/hot-pick returns (Response)
+
+	@doc "获取趋势代币"
+	@handler GetTrendingToken
+	get /token/trending-token (TokenListRequest) returns (Response)
+
+	@doc "获取代币持有者列表"
+	@handler GetTokenHolders
+	get /token/holders (TokenHoldersRequest) returns (Response)
+
+	@doc "获取排行榜代币列表"
+	@handler GetRankingTokenList
+	get /token/ranking-token-list (RankingTokenListRequest) returns (Response)
+
+	@doc "获取概览排行榜"
+	@handler GetOverviewRankings
+	get /token/overview-rankings (OverviewRankingsRequest) returns (Response)
+
+	@doc "获取高级筛选代币列表"
+	@handler GetAdvancedTokenList
+	get /token/advanced-token-list (AdvancedTokenListRequest) returns (Response)
+}
+
+@server (
+	prefix: /api/v1
+	group:  comment
+)
+service meme-api {
+	@doc "获取评论列表"
+	@handler GetCommentList
+	get /comment/list (CommentListRequest) returns (Response)
+}
+
+@server (
+	prefix: /api/v1
+	group:  trade
+)
+service meme-api {
+	@doc "获取交易记录列表"
+	@handler GetTradeList
+	get /trade/list (TradeListRequest) returns (Response)
+
+	@doc "获取即将上线的代币"
+	@handler GetUpcomingToken
+	get /trade/upcoming-token (PageRequest) returns (Response)
+
+	@doc "获取即将满额的代币"
+	@handler GetAlmostFullToken
+	get /trade/almost-full-token (PageRequest) returns (Response)
+
+	@doc "获取今日上线的代币"
+	@handler GetTodayLaunchingToken
+	get /trade/today-launching-token (TokenListRequest) returns (Response)
+}
+
+@server (
+	prefix: /api/v1
+	group:  kline
+)
+service meme-api {
+	@doc "获取K线历史数据"
+	@handler GetKlineHistory
+	get /kline/history (KlineHistoryRequest) returns (Response)
+
+	@doc "获取K线历史数据(带游标)"
+	@handler GetKlineHistoryWithCursor
+	get /kline/history-with-cursor (KlineHistoryWithCursorRequest) returns (Response)
+}
+
+@server (
+	prefix: /api/v1
+	group:  invite
+)
+service meme-api {
+	@doc "获取用户状态和邀请码"
+	@handler GetUserStatus
+	get /back/user-status (UserStatusRequest) returns (Response)
+
+	@doc "获取用户佣金信息"
+	@handler GetUserCommission
+	get /back/user-commission (UserStatusRequest) returns (Response)
+
+	@doc "获取用户邀请列表"
+	@handler GetUserInvites
+	get /back/user-invites (UserInvitesRequest) returns (Response)
+}
+
+// ==================== 需要认证的接口 ====================
+
+@server (
+	prefix:     /api/v1
+	group:      user
+	middleware: AuthMiddleware
+)
+service meme-api {
+	@doc "获取用户概览统计"
+	@handler GetOverviewStats
+	get /user/overview-stats (OverviewStatsRequest) returns (Response)
+
+	@doc "获取关注列表"
+	@handler GetFollowingList
+	get /user/following-list (PageRequest) returns (Response)
+
+	@doc "获取粉丝列表"
+	@handler GetFollowersList
+	get /user/followers-list (PageRequest) returns (Response)
+}
+
+@server (
+	prefix:     /api/v1
+	group:      token
+	middleware: AuthMiddleware
+)
+service meme-api {
+	@doc "创建代币"
+	@handler CreateToken
+	post /token/create-token (CreateTokenRequest) returns (Response)
+
+	@doc "计算代币地址"
+	@handler CalculateAddress
+	post /token/calculate-address (CalculateAddressRequest) returns (Response)
+
+	@doc "收藏代币"
+	@handler FavoriteToken
+	post /token/favorite (FavoriteTokenRequest) returns (Response)
+
+	@doc "取消收藏代币"
+	@handler UnfavoriteToken
+	post /token/unfavorite (FavoriteTokenRequest) returns (Response)
+
+	@doc "获取我的IDO列表"
+	@handler GetMyIdoList
+	get /token/my-ido-list (MyTokenListRequest) returns (Response)
+
+	@doc "获取我创建的代币列表"
+	@handler GetMyCreatedTokenList
+	get /token/my-created-token-list (MyTokenListRequest) returns (Response)
+
+	@doc "获取我拥有的代币列表"
+	@handler GetMyOwnedTokenList
+	get /token/my-owned-token-list (MyTokenListRequest) returns (Response)
+
+	@doc "获取我关注的代币列表"
+	@handler GetMyFavoriteTokens
+	get /token/my-favorite-tokens (MyTokenListRequest) returns (Response)
+
+	@doc "获取交易排行榜"
+	@handler GetTradeRankingsList
+	get /token/trade-rankings-list (RankingTokenListRequest) returns (Response)
+}
+
+@server (
+	prefix:     /api/v1
+	group:      comment
+	middleware: AuthMiddleware
+)
+service meme-api {
+	@doc "获取评论图片上传URL"
+	@handler GetCommentUploadUrl
+	get /comment/get-upload-url returns (Response)
+
+	@doc "发布文字评论"
+	@handler PostComment
+	post /comment/post-comment (PostCommentRequest) returns (Response)
+
+	@doc "发布图片评论"
+	@handler PostImgComment
+	post /comment/post-img-comment (PostImgCommentRequest) returns (Response)
+
+	@doc "删除评论"
+	@handler DeleteComment
+	post /comment/delete (DeleteCommentRequest) returns (Response)
+}
+
+@server (
+	prefix:     /api/v1
+	group:      file
+	middleware: AuthMiddleware
+)
+service meme-api {
+	@doc "获取Token Logo预签名上传URL"
+	@handler GetTokenLogoPresign
+	get /file/token-logo-presign (PresignRequest) returns (Response)
+
+	@doc "获取Token Banner预签名上传URL"
+	@handler GetTokenBannerPresign
+	get /file/token-banner-presign (PresignRequest) returns (Response)
+
+	@doc "获取活动图片预签名上传URL"
+	@handler GetActivityImagePresign
+	get /file/activity-image-presign (PresignRequest) returns (Response)
+
+	@doc "确认文件上传成功"
+	@handler UploadConfirm
+	post /file/upload-confirm (UploadConfirmRequest) returns (Response)
+}
+
+@server (
+	prefix:     /api/v1
+	group:      activity
+	middleware: AuthMiddleware
+)
+service meme-api {
+	@doc "获取用户参与的活动列表"
+	@handler GetUserParticipatedActivities
+	get /act/user-participated (UserActivityListRequest) returns (Response)
+
+	@doc "获取用户创建的活动列表"
+	@handler GetUserCreatedActivities
+	get /act/user-created (UserActivityListRequest) returns (Response)
+
+	@doc "创建活动"
+	@handler CreateActivity
+	post /act/create (CreateEventRequest) returns (Response)
+}
+
+@server (
+	prefix:     /api/v1
+	group:      invite
+	middleware: AuthMiddleware
+)
+service meme-api {
+	@doc "获取代理详情"
+	@handler GetAgentDetail
+	get /back/agent-detail (UserStatusRequest) returns (Response)
+
+	@doc "获取代理每日佣金统计"
+	@handler GetAgentDailyCommission
+	get /back/agent-daily-commission (UserStatusRequest) returns (Response)
+
+	@doc "获取每日新增代理统计"
+	@handler GetAgentDailyNewAgents
+	get /back/agent-daily-new-agents (UserStatusRequest) returns (Response)
+
+	@doc "获取每日交易量统计"
+	@handler GetAgentDailyTradeAmount
+	get /back/agent-daily-trade-amount (UserStatusRequest) returns (Response)
+
+	@doc "获取代理后代统计"
+	@handler GetAgentDescendantStats
+	get /back/agent-descendant-stats (UserStatusRequest) returns (Response)
+
+	@doc "创建返佣记录"
+	@handler CreateRebateRecord
+	post /front/rebate_record (UserStatusRequest) returns (Response)
+
+	@doc "检查返佣记录状态"
+	@handler CheckRebateRecordStatus
+	get /front/rebate_record/check-status (UserStatusRequest) returns (Response)
+}
+

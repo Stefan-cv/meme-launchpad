@@ -1,0 +1,645 @@
+syntax = "v1"
+
+// ==================== 通用类型 ====================
+
+type (
+	// 通用响应
+	Response {
+		Code    int         `json:"code"`
+		Message string      `json:"message"`
+		Data    interface{} `json:"data,omitempty"`
+	}
+
+	// 分页请求
+	PageRequest {
+		PageNo   int `form:"pn,default=1"`
+		PageSize int `form:"ps,default=10"`
+	}
+
+	// 分页响应
+	PageResponse {
+		PageNo    int `json:"pageNo"`
+		PageSize  int `json:"pageSize"`
+		Total     int `json:"total"`
+		TotalPage int `json:"totalPage"`
+	}
+)
+
+// ==================== 用户认证类型 ====================
+
+type (
+	// 获取签名消息请求
+	GetSignMsgRequest {
+		Address string `form:"address"`
+	}
+
+	// 获取签名消息响应
+	GetSignMsgResponse {
+		Message string `json:"message"`
+		Nonce   string `json:"nonce"`
+		Expiry  int64  `json:"expiry"`
+	}
+
+	// 钱包登录请求
+	WalletLoginRequest {
+		Address   string `json:"address"`
+		Signature string `json:"signature"`
+	}
+
+	// 登录响应
+	LoginResponse {
+		Token        string `json:"token"`
+		RefreshToken string `json:"refreshToken"`
+		ExpiresIn    int64  `json:"expiresIn"`
+		TokenType    string `json:"tokenType"`
+		User         *User  `json:"user"`
+	}
+
+	// 刷新令牌请求
+	RefreshTokenRequest {
+		RefreshToken string `json:"refreshToken"`
+	}
+
+	// 用户信息
+	User {
+		ID        int64  `json:"id"`
+		Address   string `json:"address"`
+		Username  string `json:"username"`
+		Email     string `json:"email,omitempty"`
+		Avatar    string `json:"avatar,omitempty"`
+		CreatedAt string `json:"createdAt"`
+		UpdatedAt string `json:"updatedAt"`
+	}
+)
+
+// ==================== 代币类型 ====================
+
+type (
+	// 代币列表请求
+	TokenListRequest {
+		PageNo          int    `form:"pn,default=1"`
+		PageSize        int    `form:"ps,default=10"`
+		Sort            string `form:"sort,optional"`
+		LaunchMode      int    `form:"lunchMode,optional"`
+		Status          string `form:"status,optional"`
+		LaunchTimeStart int64  `form:"launchTimeStart,optional"`
+		LaunchTimeEnd   int64  `form:"launchTimeEnd,optional"`
+	}
+
+	// 代币列表项
+	TokenListItem {
+		ID                      int64    `json:"id"`
+		Name                    string   `json:"name"`
+		Symbol                  string   `json:"symbol"`
+		Logo                    string   `json:"logo"`
+		Banner                  string   `json:"banner,omitempty"`
+		Desc                    string   `json:"desc,omitempty"`
+		Description             string   `json:"description,omitempty"`
+		TokenAddr               string   `json:"tokenAddr"`
+		LaunchMode              int      `json:"launchMode"`
+		LaunchTime              int64    `json:"launchTime"`
+		CurrentBnb              string   `json:"currentBnb"`
+		TargetBnb               string   `json:"targetBnb"`
+		MarginBnb               string   `json:"marginBnb,omitempty"`
+		ProgressPct             string   `json:"progressPct"`
+		MarketCap               string   `json:"marketCap"`
+		Hot                     int      `json:"hot"`
+		TokenLv                 int      `json:"tokenLv"`
+		TokenRank               int      `json:"tokenRank"`
+		Tags                    []string `json:"tags,omitempty"`
+		Website                 string   `json:"website,omitempty"`
+		Twitter                 string   `json:"twitter,omitempty"`
+		Telegram                string   `json:"telegram,omitempty"`
+		Discord                 string   `json:"discord,omitempty"`
+		PriceChangePercentage24H string  `json:"priceChangePercentage24H,omitempty"`
+		IsFavorite              bool     `json:"isFavorite"`
+		CreatedAt               string   `json:"createdAt"`
+	}
+
+	// 代币列表响应
+	TokenListResponse {
+		PageNo    int              `json:"pageNo"`
+		PageSize  int              `json:"pageSize"`
+		Total     int              `json:"total"`
+		TotalPage int              `json:"totalPage"`
+		Result    []*TokenListItem `json:"result"`
+	}
+
+	// 代币详情请求
+	TokenDetailRequest {
+		TokenAddress string `form:"tokenAddress"`
+	}
+
+	// 代币详情
+	TokenDetail {
+		ID                       int64    `json:"id"`
+		Name                     string   `json:"name"`
+		Symbol                   string   `json:"symbol"`
+		Logo                     string   `json:"logo"`
+		Banner                   string   `json:"banner,omitempty"`
+		Description              string   `json:"description,omitempty"`
+		TokenContractAddress     string   `json:"tokenContractAddress"`
+		CreatorAddress           string   `json:"creatorAddress"`
+		LaunchMode               int      `json:"launchMode"`
+		LaunchTime               int64    `json:"launchTime"`
+		BnbCurrent               string   `json:"bnbCurrent"`
+		BnbTarget                string   `json:"bnbTarget"`
+		CurrentPrice             string   `json:"currentPrice"`
+		CurrentPriceUsdt         string   `json:"currentPriceUsdt"`
+		MarketCap                string   `json:"marketCap"`
+		MarketCapUsdt            string   `json:"marketCapUsdt"`
+		ProgressPct              string   `json:"progressPct"`
+		TotalSupply              string   `json:"totalSupply"`
+		HoldersCount             int      `json:"holdersCount"`
+		BuyCount24H              int      `json:"buyCount24H"`
+		SellCount24H             int      `json:"sellCount24H"`
+		TotalVolume24H           string   `json:"totalVolume24H"`
+		PriceChangePercentage24H string   `json:"priceChangePercentage24H"`
+		Top10                    string   `json:"top10"`
+		TotalLock                string   `json:"totalLock"`
+		TurnoverRate             string   `json:"turnoverRate"`
+		Liquidity                float64  `json:"liquidity"`
+		Nonce                    int      `json:"nonce"`
+		SortPoints               int      `json:"sortPoints"`
+		IsFavorite               bool     `json:"isFavorite"`
+		Tags                     []string `json:"tags,omitempty"`
+		Website                  string   `json:"website,omitempty"`
+		Twitter                  string   `json:"twitter,omitempty"`
+		Telegram                 string   `json:"telegram,omitempty"`
+		Discord                  string   `json:"discord,omitempty"`
+		ContactEmail             string   `json:"contactEmail,omitempty"`
+		ContactTg                string   `json:"contactTg,omitempty"`
+	}
+
+	// 热门代币
+	HotPickToken {
+		TokenID     int64  `json:"tokenID"`
+		TokenName   string `json:"tokenName"`
+		TokenSymbol string `json:"tokenSymbol"`
+		TokenAddr   string `json:"tokenAddr"`
+		TokenLogo   string `json:"tokenLogo"`
+		TokenPrice  string `json:"tokenPrice"`
+		PriceChange string `json:"priceChange"`
+		MarketCap   string `json:"marketCap"`
+		IsFavorite  bool   `json:"isFavorite"`
+	}
+
+	// 代币持有者请求
+	TokenHoldersRequest {
+		TokenAddress string `form:"tokenAddress"`
+		PageNo       int    `form:"pn,default=1"`
+		PageSize     int    `form:"ps,default=10"`
+	}
+
+	// 代币持有者
+	TokenHolder {
+		Address    string `json:"address"`
+		Balance    string `json:"balance"`
+		Percentage string `json:"percentage"`
+	}
+
+	// 创建代币请求
+	CreateTokenRequest {
+		Name              string    `json:"name"`
+		Symbol            string    `json:"symbol"`
+		Description       string    `json:"description,optional"`
+		LaunchMode        int       `json:"launchMode"`
+		LaunchTime        int64     `json:"launchTime"`
+		Logo              string    `json:"logo"`
+		Banner            string    `json:"banner,optional"`
+		Website           string    `json:"website,optional"`
+		Twitter           string    `json:"twitter,optional"`
+		Telegram          string    `json:"telegram,optional"`
+		Discord           string    `json:"discord,optional"`
+		Whitepaper        string    `json:"whitepaper,optional"`
+		AdditionalLink2   string    `json:"additionalLink2,optional"`
+		Tags              []string  `json:"tags,optional"`
+		PreBuyPercent     float64   `json:"preBuyPercent"`
+		PreBuyUsedPercent []float64 `json:"preBuyUsedPercent,optional"`
+		PreBuyUsedType    []int     `json:"preBuyUsedType,optional"`
+		PreBuyLockTime    []float64 `json:"preBuyLockTime,optional"`
+		PreBuyUsedName    []string  `json:"preBuyUsedName,optional"`
+		PreBuyUsedDesc    []string  `json:"preBuyUsedDesc,optional"`
+		MarginBnb         float64   `json:"marginBnb"`
+		MarginTime        int64     `json:"marginTime"`
+		ContractTg        string    `json:"contractTg,optional"`
+		ContractEmail     string    `json:"contractEmail,optional"`
+		Digits            string    `json:"digits,optional"`
+		PredictedAddress  string    `json:"predictedAddress,optional"`
+		// IDO模式字段
+		TotalFundsRaised   float64 `json:"totalFundsRaised,optional"`
+		FundraisingCycle   float64 `json:"fundraisingCycle,optional"`
+		PreUserLimit       float64 `json:"preUserLimit,optional"`
+		UserLockupTime     float64 `json:"userLockupTime,optional"`
+		AddLiquidity       float64 `json:"addLiquidity,optional"`
+		ProtocolRevenue    float64 `json:"protocolRevenue,optional"`
+		CoreTeam           float64 `json:"coreTeam,optional"`
+		CommunityTreasury  float64 `json:"communityTreasury,optional"`
+		BuybackReserve     float64 `json:"buybackReserve,optional"`
+	}
+
+	// 创建代币响应
+	CreateTokenResponse {
+		Create2Salt      string `json:"create2Salt"`
+		CreateArg        string `json:"createArg"`
+		Nonce            int    `json:"nonce"`
+		PredictedAddress string `json:"predictedAddress"`
+		RequestID        string `json:"requestId"`
+		Signature        string `json:"signature"`
+		Timestamp        int64  `json:"timestamp"`
+	}
+
+	// 计算地址请求
+	CalculateAddressRequest {
+		Name   string `json:"name"`
+		Symbol string `json:"symbol"`
+		Digits string `json:"digits,optional"`
+	}
+
+	// 计算地址响应
+	CalculateAddressResponse {
+		PredictedAddress string `json:"predictedAddress"`
+		Salt             string `json:"salt"`
+	}
+
+	// 收藏代币请求
+	FavoriteTokenRequest {
+		TokenID int64 `json:"tokenId"`
+	}
+)
+
+// ==================== 评论类型 ====================
+
+type (
+	// 评论列表请求
+	CommentListRequest {
+		TokenID   int64 `form:"tokenId"`
+		PageNo    int   `form:"pn,default=1"`
+		PageSize  int   `form:"ps,default=20"`
+		StartTime int64 `form:"startTime,optional"`
+	}
+
+	// 评论项
+	CommentItem {
+		ID            int64  `json:"id"`
+		Content       string `json:"content"`
+		Img           string `json:"img,omitempty"`
+		HoldingAmount string `json:"holdingAmount"`
+		WalletAddress string `json:"walletAddress"`
+		CreatedAt     string `json:"createdAt"`
+	}
+
+	// 评论列表响应
+	CommentListResponse {
+		Comments []*CommentItem `json:"comments"`
+		Total    int            `json:"total"`
+		HasMore  bool           `json:"hasMore"`
+	}
+
+	// 获取评论上传URL响应
+	CommentUploadUrlResponse {
+		UploadUrl string `json:"uploadUrl"`
+		ImageUrl  string `json:"imageUrl"`
+		ExpiresAt int64  `json:"expiresAt"`
+	}
+
+	// 发布文字评论请求
+	PostCommentRequest {
+		TokenID int64  `json:"tokenId"`
+		Content string `json:"content"`
+	}
+
+	// 发布图片评论请求
+	PostImgCommentRequest {
+		TokenID int64  `json:"tokenId"`
+		Img     string `json:"img"`
+	}
+
+	// 发布评论响应
+	PostCommentResponse {
+		CommentID int64 `json:"commentId"`
+	}
+
+	// 删除评论请求
+	DeleteCommentRequest {
+		CommentID int64 `json:"commentId"`
+	}
+)
+
+// ==================== 交易类型 ====================
+
+type (
+	// 交易列表请求
+	TradeListRequest {
+		TokenAddress string  `form:"tokenAddress"`
+		PageNo       int     `form:"pn,default=1"`
+		PageSize     int     `form:"ps,default=10"`
+		OrderBy      string  `form:"orderBy,optional"`
+		OrderDesc    bool    `form:"orderDesc,optional"`
+		MinUsdAmount float64 `form:"minUsdAmount,optional"`
+		MaxUsdAmount float64 `form:"maxUsdAmount,optional"`
+	}
+
+	// 交易项
+	TradeItem {
+		BlockNumber     int64  `json:"blockNumber"`
+		BlockTimestamp  string `json:"blockTimestamp"`
+		BnbAmount       string `json:"bnbAmount"`
+		TokenAmount     string `json:"tokenAmount"`
+		Price           string `json:"price"`
+		UsdAmount       string `json:"usdAmount"`
+		TradeType       int    `json:"tradeType"`
+		TransactionHash string `json:"transactionHash"`
+		UserAddress     string `json:"userAddress"`
+		TokenAddress    string `json:"tokenAddress"`
+		CreatedAt       string `json:"createdAt"`
+	}
+
+	// 交易列表响应
+	TradeListResponse {
+		PageNo    int          `json:"pn"`
+		PageSize  int          `json:"ps"`
+		Total     int          `json:"total"`
+		TotalPage int          `json:"totalPage"`
+		Result    []*TradeItem `json:"result"`
+	}
+)
+
+// ==================== K线类型 ====================
+
+type (
+	// K线历史请求
+	KlineHistoryRequest {
+		TokenAddr string `form:"tokenAddr"`
+		Interval  string `form:"interval"`
+		From      int64  `form:"from"`
+		To        int64  `form:"to"`
+	}
+
+	// K线数据
+	KlineData {
+		S string   `json:"s"`
+		T []int64  `json:"t"`
+		O []string `json:"o"`
+		H []string `json:"h"`
+		L []string `json:"l"`
+		C []string `json:"c"`
+		V []string `json:"v"`
+	}
+
+	// 带游标的K线请求
+	KlineHistoryWithCursorRequest {
+		TokenAddr string `form:"tokenAddr"`
+		Interval  string `form:"interval"`
+		Cursor    string `form:"cursor,optional"`
+		Limit     int    `form:"limit,optional"`
+	}
+
+	// 带游标的K线响应
+	KlineHistoryWithCursorResponse {
+		Cursor string     `json:"cursor"`
+		Klines *KlineData `json:"klines"`
+	}
+)
+
+// ==================== 文件上传类型 ====================
+
+type (
+	// 预签名上传请求
+	PresignRequest {
+		MimeType string `form:"mimeType"`
+		ChainID  int    `form:"chainId"`
+	}
+
+	// 预签名上传响应
+	PresignResponse {
+		UploadUrl     string            `json:"uploadUrl"`
+		UploadHeaders map[string]string `json:"uploadHeaders,omitempty"`
+		PublicUrl     string            `json:"publicUrl"`
+		FileName      string            `json:"fileName"`
+		Key           string            `json:"key"`
+		ExpiresAt     int64             `json:"expiresAt"`
+	}
+
+	// 确认上传请求
+	UploadConfirmRequest {
+		Key         string            `json:"key"`
+		UploadedUrl string            `json:"uploadedUrl"`
+		Metadata    map[string]string `json:"metadata,optional"`
+	}
+)
+
+// ==================== 排行榜类型 ====================
+
+type (
+	// 排行榜代币请求
+	RankingTokenListRequest {
+		PageNo      int    `form:"pn,default=1"`
+		PageSize    int    `form:"ps,default=10"`
+		Platform    int    `form:"platform,optional"`
+		Category    string `form:"category,optional"`
+		TokenSymbol string `form:"tokenSymbol,optional"`
+		PageType    int    `form:"pageType,optional"`
+		SortField   string `form:"sortField,optional"`
+		SortType    string `form:"sortType,optional"`
+	}
+
+	// 排行榜代币项
+	RankingTokenItem {
+		TokenAddress string  `json:"tokenAddress"`
+		Name         string  `json:"name"`
+		Symbol       string  `json:"symbol"`
+		SubName      string  `json:"subName,omitempty"`
+		IconUrl      string  `json:"iconUrl"`
+		Price        float64 `json:"price"`
+		Change24h    float64 `json:"change24h"`
+		MarketCap    float64 `json:"marketCap"`
+		LaunchTime   int64   `json:"launchTime"`
+		LaunchMode   int     `json:"launchMode"`
+		Hot          int     `json:"hot"`
+		Holders      int     `json:"holders"`
+		Age          int     `json:"age"`
+		ProgressPct  float64 `json:"progressPct"`
+		Progress     float64 `json:"progress"`
+		Top10Percent float64 `json:"top10Percent"`
+		TxCount      int     `json:"txCount"`
+		Volume24h    float64 `json:"volume24h"`
+	}
+
+	// 概览排行榜请求
+	OverviewRankingsRequest {
+		Top int `form:"top,default=5"`
+	}
+
+	// 概览排行榜响应
+	OverviewRankingsResponse {
+		Hot          []*RankingTokenItem `json:"hot"`
+		New          []*RankingTokenItem `json:"new"`
+		TopGainer    []*RankingTokenItem `json:"topGainer"`
+		TopVolume    []*RankingTokenItem `json:"topVolume"`
+		TopMarketCap []*RankingTokenItem `json:"topMarketCap"`
+	}
+)
+
+// ==================== 用户资料类型 ====================
+
+type (
+	// 概览统计请求
+	OverviewStatsRequest {
+		Address string `form:"address,optional"`
+	}
+
+	// 概览统计响应
+	OverviewStatsResponse {
+		CreatedTokens       int    `json:"createdTokens"`
+		HeatedTokens        int    `json:"heatedTokens"`
+		OwnedTokens         int    `json:"ownedTokens"`
+		PendingUnlockTokens int    `json:"pendingUnlockTokens"`
+		TotalTradeBnb       string `json:"totalTradeBnb"`
+	}
+
+	// 我的代币列表请求
+	MyTokenListRequest {
+		PageNo    int    `form:"pn,default=1"`
+		PageSize  int    `form:"ps,default=10"`
+		SortField string `form:"sortField,optional"`
+		SortType  string `form:"sortType,optional"`
+		Search    string `form:"search,optional"`
+	}
+)
+
+// ==================== 邀请/代理类型 ====================
+
+type (
+	// 用户状态请求
+	UserStatusRequest {
+		Address string `form:"address"`
+	}
+
+	// 用户状态响应
+	UserStatusResponse {
+		IsAgent        bool   `json:"isAgent"`
+		InvitationCode string `json:"invitationCode"`
+		Address        string `json:"address"`
+	}
+
+	// 用户佣金响应
+	UserCommissionResponse {
+		Address          string  `json:"address"`
+		TotalFee         float64 `json:"totalFee"`
+		InviteUserCount  int     `json:"inviteUserCount"`
+		TradingUserCount int     `json:"tradingUserCount"`
+		TotalRebateFee   float64 `json:"totalRebateFee"`
+	}
+
+	// 用户邀请列表请求
+	UserInvitesRequest {
+		Address string `form:"address"`
+		Page    int    `form:"page,default=1"`
+		Size    int    `form:"size,default=10"`
+	}
+)
+
+// ==================== 活动类型 ====================
+
+type (
+	// 创建活动请求
+	CreateEventRequest {
+		Name                 string `json:"name"`
+		Description          string `json:"description"`
+		CategoryType         int    `json:"categoryType"`
+		PlayType             int    `json:"playType"`
+		RewardTokenType      int    `json:"rewardTokenType"`
+		RewardAmount         string `json:"rewardAmount"`
+		RewardSlots          string `json:"rewardSlots"`
+		StartAt              string `json:"startAt"`
+		EndAt                string `json:"endAt"`
+		CoverImage           string `json:"coverImage"`
+		TokenID              int64  `json:"tokenId"`
+		InitiatorType        int    `json:"initiatorType"`
+		AudienceType         int    `json:"audienceType"`
+		MinDailyTradeAmount  string `json:"minDailyTradeAmount,optional"`
+		InviteMinCount       string `json:"inviteMinCount,optional"`
+		InviteeMinTradeAmount string `json:"inviteeMinTradeAmount,optional"`
+		HeatVoteTarget       string `json:"heatVoteTarget,optional"`
+		CommentMinCount      string `json:"commentMinCount,optional"`
+		RewardTokenID        int64  `json:"rewardTokenId,optional"`
+		RewardTokenAddress   string `json:"rewardTokenAddress,optional"`
+	}
+
+	// 创建活动响应
+	CreateEventResponse {
+		ActivityID int64 `json:"activityId"`
+		Status     int   `json:"status"`
+	}
+
+	// 用户活动列表请求
+	UserActivityListRequest {
+		PageNo    int    `form:"pn,default=1"`
+		PageSize  int    `form:"ps,default=10"`
+		UserID    int64  `form:"userId,optional"`
+		Status    int    `form:"status,optional"`
+		SortField string `form:"sortField,optional"`
+		SortType  string `form:"sortType,optional"`
+	}
+)
+
+// ==================== 高级筛选类型 ====================
+
+type (
+	// 高级代币列表请求
+	AdvancedTokenListRequest {
+		PageNo               int     `form:"pn,default=1"`
+		PageSize             int     `form:"ps,default=10"`
+		VolumeStatisticsType int     `form:"volumeStatisticsType,optional"`
+		MarketCapMin         float64 `form:"marketCapMin,optional"`
+		MarketCapMax         float64 `form:"marketCapMax,optional"`
+		HoldersMin           int     `form:"holdersMin,optional"`
+		HoldersMax           int     `form:"holdersMax,optional"`
+		VolumeMin            float64 `form:"volumeMin,optional"`
+		VolumeMax            float64 `form:"volumeMax,optional"`
+		TokenIssuanceMode    int     `form:"tokenIssuanceMode,optional"`
+		IsTop10              bool    `form:"isTop10,optional"`
+		IsSign               bool    `form:"isSign,optional"`
+		IsPancakeV3          bool    `form:"isPancakeV3,optional"`
+		SortType             int     `form:"sortType,optional"`
+	}
+
+	// 高级代币项
+	AdvancedTokenItem {
+		TokenID                  int64   `json:"tokenID"`
+		CreatorID                int64   `json:"creatorID"`
+		CreatorAddress           string  `json:"creatorAddress"`
+		TokenName                string  `json:"tokenName"`
+		TokenSymbol              string  `json:"tokenSymbol"`
+		TokenDescription         string  `json:"tokenDescription"`
+		TokenContractAddress     string  `json:"tokenContractAddress"`
+		TokenLaunchMode          int     `json:"tokenLaunchMode"`
+		TokenLogo                string  `json:"tokenLogo"`
+		Website                  string  `json:"website,omitempty"`
+		Twitter                  string  `json:"twitter,omitempty"`
+		Whitepaper               string  `json:"whitepaper,omitempty"`
+		Telegram                 string  `json:"telegram,omitempty"`
+		Discord                  string  `json:"discord,omitempty"`
+		GraduationTime           int64   `json:"graduationTime"`
+		TokenCurrentPrice        string  `json:"tokenCurrentPrice"`
+		TokenMarketCap           string  `json:"tokenMarketCap"`
+		HoldersCount             int     `json:"holdersCount"`
+		ProgressPct              string  `json:"progressPct"`
+		VoteCount                int     `json:"voteCount"`
+		TotalVolume24h           string  `json:"totalVolume24h"`
+		PriceChange24h           string  `json:"priceChange24h"`
+		PriceChangePercentage24h string  `json:"priceChangePercentage24h"`
+		MarginBnbNum             float64 `json:"marginBnbNum"`
+		BnbTarget                float64 `json:"bnbTarget"`
+		BnbCurrent               float64 `json:"bnbCurrent"`
+		PreBuyPercent            float64 `json:"preBuyPercent"`
+		BuyCount24h              int     `json:"buyCount24h"`
+		SellCount24h             int     `json:"sellCount24h"`
+		TokenRank                int     `json:"tokenRank"`
+		TokenLv                  int     `json:"tokenLv"`
+		SortPoints               int     `json:"sortPoints"`
+		Top10SupplyPercent       float64 `json:"top10SupplyPercent"`
+	}
+)
+

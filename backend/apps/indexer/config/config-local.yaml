@@ -1,0 +1,31 @@
+Server:
+  Name: meme-indexer
+  Host: 0.0.0.0
+  Port: 8081
+
+Database:
+  Host: localhost
+  Port: 5432
+  User: postgres
+  Password: ""
+  Name: metaland
+  SSLMode: disable
+  MaxOpenConns: 25
+  MaxIdleConns: 5
+
+Chain:
+  Name: Anvil Local
+  ChainID: 31337
+  RPC: http://127.0.0.1:8545
+  WSS: ""
+  CoreContract: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
+  FactoryContract: "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+  HelperContract: "0x0B306BF915C4d645ff596e518fAf3F9669b97016"
+  VestingContract: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
+  StartBlock: 0
+  BlockBatchSize: 500
+  PollInterval: 2
+
+Log:
+  Level: info
+  Format: json
